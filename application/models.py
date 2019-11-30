@@ -1,4 +1,5 @@
 from . import db
+
 (Column, ForeignKey, Model, Table) = (db.Column, db.ForeignKey, db.Model, db.Table)
 (relationship, backref) = (db.relationship, db.backref)
 (Integer, String, Decimal) = (db.Integer, db.String, db.Decimal)
@@ -85,7 +86,7 @@ class Student(Model):
 
 
 class Book(Model):
-    """ Students recieve multiple textbooks that they must return. One-to-Many """
+    """ Students receive multiple textbooks that they must return. One-to-Many """
     __tablename__ = 'books'
     id = Column(Integer, primary_key=True)
     barcode = Column(String(255))
@@ -139,23 +140,21 @@ class Grade(Model):
     subject = relationship('Subject', backref=backref('grades', cascade='all, delete-orphan'))
 
 
-# def init_app(app):
-#     app.config.setdefault('SQLALCHEMY_TRACK_MODIFICATIONS', False)  # Disabled since it unnecessary uses memory
-#     # app.config.setdefault('SQLALCHEMY_ECHO', True)  # Turns on A LOT of logging.
-#     # app.config['MYSQL_DATABASE_CHARSET'] = 'utf8mb4'  # Perhaps already set by default in MySQL
-#     db.init_app(app)
+def _create_database():
+    """ This may need to be updated for it to work. """
+    from flask import Flask
+    from flask_sqlalchemy import SQLAlchemy
 
-
-# def _create_database():
-#     """ May currently only work if we do not need to drop the tables before creating them """
-#     app = Flask(__name__)
-#     app.config.from_pyfile('../config.py')
-#     init_app(app)
-#     with app.app_context():
-#         # db.drop_all()
-#         # print("All tables dropped!")
-#         db.create_all()
-#     print("All tables created")
+    db = SQLAlchemy()
+    app = Flask(__name__)
+    app.config.from_pyfile('../config.py')
+    app.config.setdefault('SQLALCHEMY_ECHO', True)
+    db.init_app(app)
+    with app.app_context():
+        db.drop_all()
+        print("All tables dropped!")
+        db.create_all()
+        print("All tables created")
 
 
 if __name__ == '__main__':
