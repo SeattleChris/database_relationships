@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block head %}
+<title>{{ mod.capitalize() }} Details View Page</title>
+{% endblock head %}
+
+{% block content %}
+<h2>{{ mod.capitalize() }} Details</h2>
+
+{% block data_view %}
+<ul>
+{% for key in data.keys() %}
+  <li>{{key}}: {{data[key]}} </li>
+{% endfor %}
+</ul>
+{% endblock data_view %}
+
+{% block modify %}
+<h3>Modify Record</h3>
+<ul>
+  <li>CAREFUL BELOW!</li>
+  <li><a href="{{ url_for('edit', mod=mod, id=data.id) }}">Update {{ mod|title }}</a></li>
+  <li><a href="{{ url_for('delete', mod=mod, id=data.id) }}">Delete {{ mod|title }}</a></li>
+</ul>
+{% endblock modify %}
+
+{% endblock content %}

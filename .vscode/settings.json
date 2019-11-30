@@ -3,5 +3,15 @@
     "activityBar.background": "#143405",
     "titleBar.activeBackground": "#1C4908",
     "titleBar.activeForeground": "#F1FDEC"
-  }
+  },
+  "python.pythonPath": "/home/chris/.local/share/virtualenvs/database_relationships-b_38mRzP/bin/python",
+  "cSpell.words": [
+    "SQLALCHEMY",
+    "dateutil",
+    "noqa",
+    "ondelete",
+    "pyfile",
+    "pymysql",
+    "wtforms"
+  ]
 }
