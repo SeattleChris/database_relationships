@@ -1,5 +1,5 @@
 from flask import current_app as app
-from flask import render_template, flash  # , abort, request, redirect, url_for
+from flask import render_template, redirect, url_for, request, flash  # , abort
 from .models import Student, Book, Year, Locker, Classroom, Subject, Grade, Club
 # from .models import db
 # import json
@@ -35,8 +35,25 @@ def view(mod, id):
 @app.route("/<string:mod>/add", methods=['GET', 'POST'])
 def add(mod):
     """ Create a new Student or other Model """
-
-    return f"Add {mod} Route"
+    Model = mod_lookup.get(mod, None)
+    if not Model:
+        return f"No such route: {mod}", 404
+    if request.method == 'POST':
+        app.logger.info(f'--------- add {mod}------------')
+        data = request.form.to_dict(flat=True)  # TODO: add form validate method for security.
+        # TODO: ?Check for failing unique column fields, or failing composite unique requirements?
+        model = Model(**data)
+        return redirect(url_for('view', mod=mod, id=model['id']))
+    # template = f"{mod}_form.html"
+    template, related = 'form.html', {}
+    if mod == 'campaign':
+        template = f"{mod}_{template}"
+        # TODO: Modify query to only get the id and name fields?
+        users = model_db.User.query.all()
+        brands = model_db.Brand.query.all()
+        related['users'] = [(ea.id, ea.name) for ea in users]
+        related['brands'] = [(ea.id, ea.name) for ea in brands]
+    return render_template(template, action='Add', mod=mod, data={}, related=related)
 
 
 @app.route("/<string:mod>/<int:id>/edit", methods=['GET', 'POST'])

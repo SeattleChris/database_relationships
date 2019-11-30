@@ -11,6 +11,7 @@
     "noqa",
     "ondelete",
     "pyfile",
-    "pymysql"
+    "pymysql",
+    "wtforms"
   ]
 }

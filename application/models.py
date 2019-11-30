@@ -1,5 +1,5 @@
-from . import db
 from datetime import datetime as dt
+from . import db
 # from flask_sqlalchemy import BaseQuery  # if we create custom query
 # from sqlalchemy.exc import IntegrityError  # handling collisions on unique, or maybe importing other error
 # SQLAlchemy overloads &, |, and ~, so use them inside a filter. Paranthesis are needed around each equality check
@@ -153,22 +153,24 @@ class Club(Model):
 ##################################################################################
 
 
-def _create_database():
-    """ This may need to be updated for it to work. """
-    from flask import Flask
-    from flask_sqlalchemy import SQLAlchemy
+# def _create_database():
+#     """ This may need to be updated for it to work. """
+#     from flask import Flask
+#     from flask_sqlalchemy import SQLAlchemy
+#     from ..config import Config
 
-    db = SQLAlchemy()
-    app = Flask(__name__)
-    app.config.from_pyfile('../config.py')
-    app.config.setdefault('SQLALCHEMY_ECHO', True)
-    db.init_app(app)
-    with app.app_context():
-        db.drop_all()
-        print("All tables dropped!")
-        db.create_all()
-        print("All tables created")
+#     db = SQLAlchemy()
+#     app = Flask(__name__)
+#     app.config.from_object(Config)
+#     app.config.setdefault('SQLALCHEMY_ECHO', True)
+#     db.init_app(app)
+#     with app.app_context():
+#         db.drop_all()
+#         print("All tables dropped!")
+#         db.create_all()
+#         print("All tables created")
+#     return db
 
 
-if __name__ == '__main__':
-    _create_database()
+# if __name__ == '__main__':
+#     db = _create_database()
