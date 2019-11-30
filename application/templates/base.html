@@ -18,7 +18,8 @@
     <ul>
       <li><a href="{{ url_for('home') }}">Home</a></li>
       <li><a href="{{ url_for('hello') }}">Hello</a></li>
-      <li><a href="{{ url_for('all', mod='user') }}">Users</a></li>
+      <li><a href="{{ url_for('all', mod='student') }}">List all Students</a></li>
+      <li><a href="{{ url_for('view', mod='student', id=1) }}">View Student #1</a></li>
     </ul>
   </nav>
   {% with messages = get_flashed_messages() %}

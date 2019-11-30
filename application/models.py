@@ -25,8 +25,15 @@ student-student Clubs   => Many-to-Many # 2 relationships on Club, 2 assoc_table
 popular = Table(
     'popular',  # Base.metadata,
     Column('id', Integer, primary_key=True),
-    Column('high_regard_id', Integer, ForeignKey('Student.id')),
-    Column('fan_id',  Integer, ForeignKey('Student.id'))
+    Column('high_regard_id', Integer, ForeignKey('students.id')),
+    Column('fan_id',  Integer, ForeignKey('students.id'))
+)
+
+association_table = Table(
+    'student_classroom',  # Base.metadata,
+    Column('id', Integer, primary_key=True),
+    Column('student_id', Integer, ForeignKey('students.id')),
+    Column('classroom_id', Integer, ForeignKey('classrooms.id'))
 )
 
 
@@ -42,7 +49,7 @@ class Student(Model):
     modified = db.Column(db.DateTime,               index=False, unique=False, nullable=False, default=dt.utcnow, onupdate=dt.utcnow)
     created = db.Column(db.DateTime,                index=False, unique=False, nullable=False, default=dt.utcnow)
     locker = relationship('Locker', backref=backref('student', uselist=False))
-    rooms = relationship('Classroom', secondary='association_table', backref='students')
+    rooms = relationship('Classroom', secondary=association_table, backref='students')
     subjects = relationship('Subject', secondary='grades')
     fans = relationship('Student',
                         secondary=popular,
@@ -80,14 +87,6 @@ class Locker(Model):
     id = Column(Integer, primary_key=True)
     number = Column(Integer)
     # # student = backref from Student.locker
-
-
-association_table = Table(
-    'student_classroom',  # Base.metadata,
-    Column('id', Integer, primary_key=True),
-    Column('student_id', Integer, ForeignKey('students.id')),
-    Column('classroom_id', Integer, ForeignKey('classrooms.id'))
-)
 
 
 class Classroom(Model):

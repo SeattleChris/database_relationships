@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block head %}
 <title>{{ mod.capitalize() }} Details View Page</title>
-{% endblock %}
+{% endblock head %}
 
 {% block content %}
 <h2>{{ mod.capitalize() }} Details</h2>
@@ -21,7 +21,6 @@
   <li><a href="{{ url_for('edit', mod=mod, id=data.id) }}">Update {{ mod|title }}</a></li>
   <li><a href="{{ url_for('delete', mod=mod, id=data.id) }}">Delete {{ mod|title }}</a></li>
 </ul>
-{% endif %}
 {% endblock modify %}
 
 {% endblock content %}

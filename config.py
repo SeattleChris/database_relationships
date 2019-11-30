@@ -8,7 +8,7 @@ class Config:
     # FLASK_ENV = environ.get('FLASK_ENV')
     # General
     # The secret key is used by Flask to encrypt session cookies.
-    SECRET_KEY = environ.get('SECRET_KEY', '')
+    SECRET_KEY = environ.get('SECRET_KEY')
     TESTING = environ.get('TESTING', False)
     FLASK_DEBUG = environ.get('FLASK_DEBUG', False)
 

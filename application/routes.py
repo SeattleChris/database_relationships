@@ -1,6 +1,7 @@
 from flask import current_app as app
-from flask import render_template  # , abort, request, flash, redirect, url_for
-from .models import db, Student, Book, Year, Locker, Classroom, Subject, Grade, Club
+from flask import render_template, flash  # , abort, request, redirect, url_for
+from .models import Student, Book, Year, Locker, Classroom, Subject, Grade, Club
+# from .models import db
 # import json
 mod_list = [Student, Book, Year, Locker, Classroom, Subject, Grade, Club]
 mod_lookup = {model.__name__.lower(): model for model in mod_list}
@@ -17,11 +18,6 @@ def hello():
     return render_template('base.html', data=data)
 
 
-@app.route("/members")
-def members():
-    return "Members"
-
-
 @app.route('/<string:mod>/<int:id>')
 def view(mod, id):
     """ Used to view the Model represented by 'mod', with database id of 'id'. """
@@ -29,6 +25,9 @@ def view(mod, id):
     if not Model:
         return f"No such route: {mod}", 404
     model = Model.query.get(id)
+    if not model:
+        flash("That record does not exist")
+        model = {'id': 0}
     template = 'view.html'
     return render_template(template, mod=mod, data=model)
 
@@ -59,11 +58,6 @@ def all(mod):
     """ Show all records of the Model represented by 'mod'. """
 
     return f"Show All {mod} Route"
-
-
-@app.route("/members/<string:name>/")
-def getMember(name):
-    return f"Members: {name}"
 
 
 # Catchall redirect route.
