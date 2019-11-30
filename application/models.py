@@ -4,9 +4,6 @@ from . import db
 (relationship, backref) = (db.relationship, db.backref)
 (Integer, String, Decimal) = (db.Integer, db.String, db.Decimal)
 
-# from flask import Flask
-# from flask_sqlalchemy import SQLAlchemy
-# from flask_sqlalchemy.
 # from flask_sqlalchemy import BaseQuery, SQLAlchemy  # if we create custom query
 # from sqlalchemy.exc import IntegrityError
 # from sqlalchemy import or_
@@ -15,21 +12,14 @@ from . import db
 # from pprint import pprint  # only for debugging
 
 # ===================================================================================================================
-# student to book         => One-to-Many  # ForeignKey on One, relationship on Second.
-# student to year         => Many-to-One  # ForeignKey & relationship on One.
-# student to locker       => One-to-One   # ForeignKey & relationship on One.
-# student to classroom    => Many-to-Many # Relationship on One, 2 ForeignKeys on needed association_table.
-# student to subject      => Many-to-Many # Relationship on Both, 2 ForeignKeys & 2 Relationships on Associated Object (class).
+# student to book           => One-to-Many  # ForeignKey on One, relationship on Second.
+# student to year           => Many-to-One  # ForeignKey & relationship on One.
+# student to locker         => One-to-One   # ForeignKey & relationship on One.
+# student to classroom      => Many-to-Many # Relationship on One, 2 ForeignKeys on needed association_table.
+# student to subject        => Many-to-Many # Relationship on Both, 2 ForeignKeys & 2 Relationships on Associated Object (class).
 # student-student hierarchy => Many-to-Many # 1 relationship on Student, 2 ForeignKeys on assoc_table
-# student-student Clubs   => Many-to-Many # 2 relationships on Club, 2 assoc_table, each w/ 2 ForeignKeys (Club, leader|member)
+# student-student Clubs     => Many-to-Many # 2 relationships on Club, 2 assoc_table, each w/ 2 ForeignKeys (Club, leader|member)
 # ===================================================================================================================
-
-association_table = Table(
-    'student_classroom',  # Base.metadata,
-    Column('id', Integer, primary_key=True),
-    Column('student_id', Integer, ForeignKey('student.id')),
-    Column('classroom_id', Integer, ForeignKey('classroom.id'))
-)
 
 hierarchy = Table(
     'hierarchy',  # Base.metadata,
@@ -37,28 +27,6 @@ hierarchy = Table(
     Column('superior_id', Integer, ForeignKey('Student.id')),
     Column('report_id',  Integer, ForeignKey('Student.id'))
 )
-
-club_leader = Table(
-    'club_leader',  # Base.metadata,
-    Column('id', Integer, primary_key=True),
-    Column('leader_id',  Integer, ForeignKey('students.id', ondelete="CASCADE")),
-    Column('club_id',    Integer, ForeignKey('clubs.id', ondelete="CASCADE"))
-)
-club_member = Table(
-    'club_member',  # Base.metadata,
-    Column('id', Integer, primary_key=True),
-    Column('member_id',  Integer, ForeignKey('students.id', ondelete="CASCADE")),
-    Column('club_id',    Integer, ForeignKey('clubs.id', ondelete="CASCADE"))
-)
-
-
-class Club(Model):
-    """ A Student can be a member and/or a leader of many clubs, clubs have many members and leaders """
-    __tablename__ = 'clubs'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(255))
-    leaders = relationship('Student', secondary=club_leader, backref=backref('leading_clubs', lazy='dynamic'))
-    members = relationship('Student', secondary=club_member, backref=backref('joined_clubs', lazy='dynamic'))
 
 
 class Student(Model):
@@ -71,14 +39,14 @@ class Student(Model):
     year = relationship('Year', backref='students')
     locker_id = Column(Integer, ForeignKey('lockers.id'))
     locker = relationship('Locker', backref=backref('student', uselist=False))
-    rooms = relationship('Classroom', secondary=association_table, backref='students')
+    rooms = relationship('Classroom', secondary='association_table', backref='students')
     subjects = relationship('Subject', secondary='grades')
     superiors = relationship('Student',
                              secondary=hierarchy,
-                             primaryjoin=id == superior_member.c.report_id,
-                             secondaryjoin=id == superior_member.c.superior_id,
+                             primaryjoin=id == hierarchy.c.report_id,
+                             secondaryjoin=id == hierarchy.c.superior_id,
                              backref=backref('reports')
-    )
+                             )
     # # reports = backref from Student.superiors
     # # leading_clubs = backref from Club.leaders
     # # joined_clubs = backref from Club.members
@@ -117,7 +85,7 @@ class Classroom(Model):
     id = Column(Integer, primary_key=True)
     building = Column(String(255))
     room_num = Column(Integer)
-    # # students = brackref from Student.rooms
+    # # students = backref from Student.rooms
 
 
 class Subject(Model):
@@ -138,6 +106,34 @@ class Grade(Model):
     gradepoint = Column(Decimal)
     student = relationship('Student', backref=backref('grades', cascade='all, delete-orphan'))
     subject = relationship('Subject', backref=backref('grades', cascade='all, delete-orphan'))
+
+
+club_leader = Table(
+    'club_leader',  # Base.metadata,
+    Column('id', Integer, primary_key=True),
+    Column('leader_id',  Integer, ForeignKey('students.id', ondelete="CASCADE")),
+    Column('club_id',    Integer, ForeignKey('clubs.id', ondelete="CASCADE"))
+)
+club_member = Table(
+    'club_member',  # Base.metadata,
+    Column('id', Integer, primary_key=True),
+    Column('member_id',  Integer, ForeignKey('students.id', ondelete="CASCADE")),
+    Column('club_id',    Integer, ForeignKey('clubs.id', ondelete="CASCADE"))
+)
+
+
+class Club(Model):
+    """ A Student can be a member and/or a leader of many clubs, clubs have many members and leaders """
+    __tablename__ = 'clubs'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255))
+    leaders = relationship('Student', secondary=club_leader, backref=backref('leading_clubs', lazy='dynamic'))
+    members = relationship('Student', secondary=club_member, backref=backref('joined_clubs', lazy='dynamic'))
+
+
+##################################################################################
+# End of Models. Some setup functions follow below.
+##################################################################################
 
 
 def _create_database():
