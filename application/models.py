@@ -1,32 +1,26 @@
 from . import db
+from datetime import datetime as dt
+# from flask_sqlalchemy import BaseQuery  # if we create custom query
+# from sqlalchemy.exc import IntegrityError  # handling collisions on unique, or maybe importing other error
+# SQLAlchemy overloads &, |, and ~, so use them inside a filter. Paranthesis are needed around each equality check
+# from sqlalchemy import or_  # this can be used with a generator to handle indeterminate number of 'OR' conditions
+# from pprint import pprint  # only for debugging
 
 (Column, ForeignKey, Model, Table) = (db.Column, db.ForeignKey, db.Model, db.Table)
 (relationship, backref) = (db.relationship, db.backref)
 (Integer, String, Decimal) = (db.Integer, db.String, db.Decimal)
 
-# from flask_sqlalchemy import BaseQuery, SQLAlchemy  # if we create custom query
-# from sqlalchemy.exc import IntegrityError
-# from sqlalchemy import or_
-# from datetime import datetime as dt
-# from dateutil import parser
-# from pprint import pprint  # only for debugging
-
-# ===================================================================================================================
-# student to book         => One-to-Many  # ForeignKey on One, relationship on Second.
-# student to year         => Many-to-One  # ForeignKey & relationship on One.
-# student to locker       => One-to-One   # ForeignKey & relationship on One.
-# student to classroom    => Many-to-Many # Relationship on One, 2 ForeignKeys on needed association_table.
-# student to subject      => Many-to-Many # Relationship on Both, 2 ForeignKeys & 2 Relationships on Associated Object (class).
-# student-student popular => Many-to-Many # 1 relationship on Student, 2 ForeignKeys on assoc_table
-# student-student Clubs   => Many-to-Many # 2 relationships on Club, 2 assoc_table, each w/ 2 ForeignKeys (Club, leader|member)
-# ===================================================================================================================
-
-hierarchy = Table(
-    'hierarchy',  # Base.metadata,
-    Column('id', Integer, primary_key=True),
-    Column('superior_id', Integer, ForeignKey('Student.id')),
-    Column('report_id',  Integer, ForeignKey('Student.id'))
-)
+"""
+===================================================================================================================
+student to book         => One-to-Many  # ForeignKey on One, relationship on Second.
+student to year         => Many-to-One  # ForeignKey & relationship on One.
+student to locker       => One-to-One   # ForeignKey & relationship on One.
+student to classroom    => Many-to-Many # Relationship on One, 2 ForeignKeys on needed association_table.
+student to subject      => Many-to-Many # Relationship on Both, 2 ForeignKeys & 2 Relationships on Associated Object (class).
+student-student popular => Many-to-Many # 1 relationship on Student, 2 ForeignKeys on assoc_table
+student-student Clubs   => Many-to-Many # 2 relationships on Club, 2 assoc_table, each w/ 2 ForeignKeys (Club, leader|member)
+===================================================================================================================
+"""
 
 popular = Table(
     'popular',  # Base.metadata,
@@ -45,6 +39,8 @@ class Student(Model):
     year_id = Column(Integer, ForeignKey('years.id'))
     year = relationship('Year', backref='students')
     locker_id = Column(Integer, ForeignKey('lockers.id'))
+    modified = db.Column(db.DateTime,               index=False, unique=False, nullable=False, default=dt.utcnow, onupdate=dt.utcnow)
+    created = db.Column(db.DateTime,                index=False, unique=False, nullable=False, default=dt.utcnow)
     locker = relationship('Locker', backref=backref('student', uselist=False))
     rooms = relationship('Classroom', secondary='association_table', backref='students')
     subjects = relationship('Subject', secondary='grades')
@@ -89,14 +85,14 @@ class Locker(Model):
 association_table = Table(
     'student_classroom',  # Base.metadata,
     Column('id', Integer, primary_key=True),
-    Column('student_id', Integer, ForeignKey('student.id')),
-    Column('classroom_id', Integer, ForeignKey('classroom.id'))
+    Column('student_id', Integer, ForeignKey('students.id')),
+    Column('classroom_id', Integer, ForeignKey('classrooms.id'))
 )
 
 
 class Classroom(Model):
     """ Various Students are in various Classrooms in a day. Many-to-Many (simple) """
-    __tablename__ = 'subjects'
+    __tablename__ = 'classrooms'
     id = Column(Integer, primary_key=True)
     building = Column(String(255))
     room_num = Column(Integer)
@@ -113,7 +109,10 @@ class Subject(Model):
 
 
 class Grade(Model):
-    """ Each Student gets a Grade for each Subject they have. Associated Object of Many-to-Many """
+    """ Associated Object of Many-to-Many (with extra fields).
+        Each Student gets a Grade for each Subject they have.
+        Essentially creating One-to-Many for Student-to-Grade and Subject-to-Grade.
+    """
     __tablename__ = 'grades'
     id = Column(Integer, primary_key=True)
     student_id = Column(Integer, ForeignKey('students.id'))
@@ -129,6 +128,7 @@ club_leader = Table(
     Column('leader_id',  Integer, ForeignKey('students.id', ondelete="CASCADE")),
     Column('club_id',    Integer, ForeignKey('clubs.id', ondelete="CASCADE"))
 )
+
 club_member = Table(
     'club_member',  # Base.metadata,
     Column('id', Integer, primary_key=True),
@@ -138,7 +138,10 @@ club_member = Table(
 
 
 class Club(Model):
-    """ A Student can be a member and/or a leader of many clubs, clubs have many members and leaders """
+    """ A Student can be a member and/or a leader of many clubs.
+        Clubs have many members and many leaders.
+        Many-to-Many (self-referencing) through associated object with extra fields.
+    """
     __tablename__ = 'clubs'
     id = Column(Integer, primary_key=True)
     name = Column(String(255))
