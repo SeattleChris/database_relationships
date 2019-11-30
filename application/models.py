@@ -8,7 +8,7 @@ from datetime import datetime as dt
 
 (Column, ForeignKey, Model, Table) = (db.Column, db.ForeignKey, db.Model, db.Table)
 (relationship, backref) = (db.relationship, db.backref)
-(Integer, String, Decimal) = (db.Integer, db.String, db.Decimal)
+(Integer, String, Numeric) = (db.Integer, db.String, db.Numeric)
 
 """
 ===================================================================================================================
@@ -117,7 +117,7 @@ class Grade(Model):
     id = Column(Integer, primary_key=True)
     student_id = Column(Integer, ForeignKey('students.id'))
     subject_id = Column(Integer, ForeignKey('subjects.id'))
-    gradepoint = Column(Decimal)
+    gradepoint = Column(Numeric)
     student = relationship('Student', backref=backref('grades', cascade='all, delete-orphan'))
     subject = relationship('Subject', backref=backref('grades', cascade='all, delete-orphan'))
 

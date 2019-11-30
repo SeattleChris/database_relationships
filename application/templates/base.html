@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tutorial for Database Relationships">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/static/reset.css">
+  <link rel="stylesheet" href="/static/main.css">
+  {% block head %}
+  <title>Database Relationships</title>
+  {% endblock head %}
+</head>
+<body>
+<header>
+{% block header %}
+  <nav>
+    <ul>
+      <li><a href="{{ url_for('home') }}">Home</a></li>
+      <li><a href="{{ url_for('hello') }}">Hello</a></li>
+      <li><a href="{{ url_for('all', mod='user') }}">Users</a></li>
+    </ul>
+  </nav>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+    <h3>{{ message }}</h3>
+    {% endfor %}
+  {% endif %}
+  {% endwith %}
+{% endblock header %}
+</header>
+{% block content %}
+<main>
+  <h1>Main Content</h1>
+  <p>content goes here</p>
+  {% if data %}
+  <h2>Data</h2>
+  <p>{{ data }}</p>
+  {% endif %}
+</main>
+{% endblock content %}
+<footer>
+  <p>
+    <a href="{{ url_for('render_static', page_name='privacy') }}">Privacy</a> | <a href="{{ url_for('render_static', page_name='tos') }}">Terms of Service</a>
+  </p>
+</footer>
+</body>
+</html>

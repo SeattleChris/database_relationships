@@ -10,6 +10,7 @@
     "dateutil",
     "noqa",
     "ondelete",
-    "pyfile"
+    "pyfile",
+    "pymysql"
   ]
 }

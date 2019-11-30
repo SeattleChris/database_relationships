@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Privacy Policy</title>
+{% endblock head %}
+
+{% block header %}
+{{ super() }}
+<h1>Privacy Policy</h1>
+{% endblock header %}
+
+{% block content %}
+<main>
+  <h1>Also Privacy</h1>
+  <p>
+    {% if data %}
+    {{ data }}
+    {% else %}
+    some static content.
+    {% endif %}
+  </p>
+  <h2>Another Heading</h2>
+  <ul>
+    <li><a href="{{ url_for('home') }}">Link example Home</a></li>
+  </ul>
+</main>
+{% endblock content %}
