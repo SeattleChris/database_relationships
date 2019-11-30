@@ -12,13 +12,13 @@ from . import db
 # from pprint import pprint  # only for debugging
 
 # ===================================================================================================================
-# student to book           => One-to-Many  # ForeignKey on One, relationship on Second.
-# student to year           => Many-to-One  # ForeignKey & relationship on One.
-# student to locker         => One-to-One   # ForeignKey & relationship on One.
-# student to classroom      => Many-to-Many # Relationship on One, 2 ForeignKeys on needed association_table.
-# student to subject        => Many-to-Many # Relationship on Both, 2 ForeignKeys & 2 Relationships on Associated Object (class).
-# student-student hierarchy => Many-to-Many # 1 relationship on Student, 2 ForeignKeys on assoc_table
-# student-student Clubs     => Many-to-Many # 2 relationships on Club, 2 assoc_table, each w/ 2 ForeignKeys (Club, leader|member)
+# student to book         => One-to-Many  # ForeignKey on One, relationship on Second.
+# student to year         => Many-to-One  # ForeignKey & relationship on One.
+# student to locker       => One-to-One   # ForeignKey & relationship on One.
+# student to classroom    => Many-to-Many # Relationship on One, 2 ForeignKeys on needed association_table.
+# student to subject      => Many-to-Many # Relationship on Both, 2 ForeignKeys & 2 Relationships on Associated Object (class).
+# student-student popular => Many-to-Many # 1 relationship on Student, 2 ForeignKeys on assoc_table
+# student-student Clubs   => Many-to-Many # 2 relationships on Club, 2 assoc_table, each w/ 2 ForeignKeys (Club, leader|member)
 # ===================================================================================================================
 
 hierarchy = Table(
@@ -26,6 +26,13 @@ hierarchy = Table(
     Column('id', Integer, primary_key=True),
     Column('superior_id', Integer, ForeignKey('Student.id')),
     Column('report_id',  Integer, ForeignKey('Student.id'))
+)
+
+popular = Table(
+    'popular',  # Base.metadata,
+    Column('id', Integer, primary_key=True),
+    Column('high_regard_id', Integer, ForeignKey('Student.id')),
+    Column('fan_id',  Integer, ForeignKey('Student.id'))
 )
 
 
@@ -41,12 +48,12 @@ class Student(Model):
     locker = relationship('Locker', backref=backref('student', uselist=False))
     rooms = relationship('Classroom', secondary='association_table', backref='students')
     subjects = relationship('Subject', secondary='grades')
-    superiors = relationship('Student',
-                             secondary=hierarchy,
-                             primaryjoin=id == hierarchy.c.report_id,
-                             secondaryjoin=id == hierarchy.c.superior_id,
-                             backref=backref('reports')
-                             )
+    high_regards = relationship('Student',
+                                secondary=popular,
+                                primaryjoin=id == popular.c.fan_id,
+                                secondaryjoin=id == popular.c.high_regard_id,
+                                backref=backref('fans')
+                                )
     # # reports = backref from Student.superiors
     # # leading_clubs = backref from Club.leaders
     # # joined_clubs = backref from Club.members
@@ -77,6 +84,14 @@ class Locker(Model):
     id = Column(Integer, primary_key=True)
     number = Column(Integer)
     # # student = backref from Student.locker
+
+
+association_table = Table(
+    'student_classroom',  # Base.metadata,
+    Column('id', Integer, primary_key=True),
+    Column('student_id', Integer, ForeignKey('student.id')),
+    Column('classroom_id', Integer, ForeignKey('classroom.id'))
+)
 
 
 class Classroom(Model):
