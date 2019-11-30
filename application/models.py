@@ -48,13 +48,13 @@ class Student(Model):
     locker = relationship('Locker', backref=backref('student', uselist=False))
     rooms = relationship('Classroom', secondary='association_table', backref='students')
     subjects = relationship('Subject', secondary='grades')
-    high_regards = relationship('Student',
-                                secondary=popular,
-                                primaryjoin=id == popular.c.fan_id,
-                                secondaryjoin=id == popular.c.high_regard_id,
-                                backref=backref('fans')
-                                )
-    # # reports = backref from Student.superiors
+    fans = relationship('Student',
+                        secondary=popular,
+                        primaryjoin=id == popular.c.high_regard_id,
+                        secondaryjoin=id == popular.c.fan_id,
+                        backref=backref('high_regards')
+                        )
+    # # high_regards = backref from Student.fans
     # # leading_clubs = backref from Club.leaders
     # # joined_clubs = backref from Club.members
     # # grades = backref from Grade.student
