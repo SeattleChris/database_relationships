@@ -1,16 +1,19 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from . import db
+(Column, ForeignKey, Model, Table) = (db.Column, db.ForeignKey, db.Model, db.Table)
+(relationship, backref) = (db.relationship, db.backref)
+(Integer, String, Decimal) = (db.Integer, db.String, db.Decimal)
+
+# from flask import Flask
+# from flask_sqlalchemy import SQLAlchemy
 # from flask_sqlalchemy.
 # from flask_sqlalchemy import BaseQuery, SQLAlchemy  # if we create custom query
 # from sqlalchemy.exc import IntegrityError
-from sqlalchemy import or_
-from datetime import datetime as dt
-from dateutil import parser
-from pprint import pprint  # only for debugging
-# TODO: see "Setting up Constraints when using the Declarative ORM Extension" at https://docs.sqlalchemy.org/en/13/core/constraints.html#unique-constraint
+# from sqlalchemy import or_
+# from datetime import datetime as dt
+# from dateutil import parser
+# from pprint import pprint  # only for debugging
 
-# db = SQLAlchemy()
-
+# ===================================================================================================================
 # student to book         => One-to-Many  # ForeignKey on One, relationship on Second.
 # student to year         => Many-to-One  # ForeignKey & relationship on One.
 # student to locker       => One-to-One   # ForeignKey & relationship on One.
