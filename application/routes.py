@@ -1,6 +1,7 @@
 from flask import current_app as app
 from flask import render_template, redirect, url_for, request, flash  # , abort
 from .models import Student, Book, Year, Locker, Classroom, Subject, Grade, Club
+# from . import forms
 # from .models import db
 # import json
 mod_list = [Student, Book, Year, Locker, Classroom, Subject, Grade, Club]
@@ -38,6 +39,7 @@ def add(mod):
     Model = mod_lookup.get(mod, None)
     if not Model:
         return f"No such route: {mod}", 404
+    form = Model.form
     if request.method == 'POST':
         app.logger.info(f'--------- add {mod}------------')
         data = request.form.to_dict(flat=True)  # TODO: add form validate method for security.
@@ -59,6 +61,10 @@ def add(mod):
 @app.route("/<string:mod>/<int:id>/edit", methods=['GET', 'POST'])
 def edit(mod, id):
     """ Edit existing record for Student or other Model """
+    Model = mod_lookup.get(mod, None)
+    if not Model:
+        return f"No such route: {mod}", 404
+    form = Model.form
 
     return f"Edit {mod} Route for record with {id} primary key. "
 
