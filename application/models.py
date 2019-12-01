@@ -1,5 +1,6 @@
 from datetime import datetime as dt
 from . import db
+from . import forms
 # from flask_sqlalchemy import BaseQuery  # if we create custom query
 # from sqlalchemy.exc import IntegrityError  # handling collisions on unique, or maybe importing other error
 # SQLAlchemy overloads &, |, and ~, so use them inside a filter. Paranthesis are needed around each equality check
@@ -40,6 +41,7 @@ association_table = Table(
 class Student(Model):
     """ Students have many types of data associations. """
     __tablename__ = 'students'
+    form = forms.StudentForm
     id = Column(Integer, primary_key=True)
     name = Column(String(255))
     books = relationship('Book', backref='student')
@@ -66,6 +68,7 @@ class Student(Model):
 class Book(Model):
     """ Students receive multiple textbooks that they must return. One-to-Many """
     __tablename__ = 'books'
+    form = forms.BookForm
     id = Column(Integer, primary_key=True)
     barcode = Column(String(255))
     condition = Column(String(255))
@@ -76,6 +79,7 @@ class Book(Model):
 class Year(Model):
     """ Various Students have a projected year of graduation. Many-to-One """
     __tablename__ = 'years'
+    form = forms.YearForm
     id = Column(Integer, primary_key=True)
     graduation_year = Column(Integer)
     # # students = backref from Student.year
@@ -84,6 +88,7 @@ class Year(Model):
 class Locker(Model):
     """ Each Student gets only one Locker. One-to-One """
     __tablename__ = 'lockers'
+    form = forms.LockerForm
     id = Column(Integer, primary_key=True)
     number = Column(Integer)
     # # student = backref from Student.locker
@@ -92,6 +97,7 @@ class Locker(Model):
 class Classroom(Model):
     """ Various Students are in various Classrooms in a day. Many-to-Many (simple) """
     __tablename__ = 'classrooms'
+    form = forms.ClassroomForm
     id = Column(Integer, primary_key=True)
     building = Column(String(255))
     room_num = Column(Integer)
@@ -101,6 +107,7 @@ class Classroom(Model):
 class Subject(Model):
     """ Multiple Students in multiple Subjects, with a Grade for each. Many-to-Many through Associated Object """
     __tablename__ = 'subjects'
+    form = forms.SubjectForm
     id = Column(Integer, primary_key=True)
     name = Column(String(255))
     students = relationship('Student', secondary='grades')
@@ -113,6 +120,7 @@ class Grade(Model):
         Essentially creating One-to-Many for Student-to-Grade and Subject-to-Grade.
     """
     __tablename__ = 'grades'
+    form = forms.GradeForm
     id = Column(Integer, primary_key=True)
     student_id = Column(Integer, ForeignKey('students.id'))
     subject_id = Column(Integer, ForeignKey('subjects.id'))
@@ -142,6 +150,7 @@ class Club(Model):
         Many-to-Many (self-referencing) through associated object with extra fields.
     """
     __tablename__ = 'clubs'
+    form = forms.ClubForm
     id = Column(Integer, primary_key=True)
     name = Column(String(255))
     leaders = relationship('Student', secondary=club_leader, backref=backref('leading_clubs', lazy='dynamic'))
