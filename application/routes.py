@@ -61,6 +61,10 @@ def add(mod):
 @app.route("/<string:mod>/<int:id>/edit", methods=['GET', 'POST'])
 def edit(mod, id):
     """ Edit existing record for Student or other Model """
+    Model = mod_lookup.get(mod, None)
+    if not Model:
+        return f"No such route: {mod}", 404
+    form = Model.form
 
     return f"Edit {mod} Route for record with {id} primary key. "
 
