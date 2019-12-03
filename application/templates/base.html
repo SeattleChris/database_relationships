@@ -17,9 +17,14 @@
   <nav>
     <ul>
       <li><a href="{{ url_for('home') }}">Home</a></li>
-      <li><a href="{{ url_for('hello') }}">Hello</a></li>
-      <li><a href="{{ url_for('all', mod='student') }}">List all Students</a></li>
-      <li><a href="{{ url_for('view', mod='student', id=1) }}">View Student #1</a></li>
+      <li><a href="{{ url_for('all', mod='student') }}">Students</a></li>
+      <li><a href="{{ url_for('all', mod='book') }}">Books</a></li>
+      <li><a href="{{ url_for('all', mod='year') }}">Years</a></li>
+      <li><a href="{{ url_for('all', mod='locker') }}">Lockers</a></li>
+      <li><a href="{{ url_for('all', mod='classroom') }}">Classrooms</a></li>
+      <li><a href="{{ url_for('all', mod='subject') }}">Subjects</a></li>
+      <li><a href="{{ url_for('all', mod='grade') }}">Grades</a></li>
+      <li><a href="{{ url_for('all', mod='club') }}">Clubs</a></li>
     </ul>
   </nav>
   {% with messages = get_flashed_messages() %}

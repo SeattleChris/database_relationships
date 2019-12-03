@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block head %}
+<title>{{mod|title}} Form</title>
+{% endblock head %}
+
+{% block header %}
+{{ super() }}
+<h1>{{mod|title}} Form</h1>
+{% endblock header %}
+
+{% block content %}
+<main>
+  <p>some text before the errors</p>
+  {% if form.errors %}
+    <ul class="errors">
+        {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+            {% for error in field_errors %}
+                <li>{{ form[field_name].label }}: {{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+  {% endif %}
+  <p>some text before the form</p>
+  <form method="POST">
+    {% for field in form if field.name != "csrf_token" %}
+    <p>{{ field.label() }}: {{ field }}
+        {% for error in field.errors %}
+            {{ error }}
+        {% endfor %}
+    </p>
+    {% endfor %}
+    <button type="submit" class="btn btn-success">Save</button>
+  </form>
+
+  <h2>Another Heading</h2>
+  <ul>
+    <li><a href="{{ url_for('home') }}">Link example Home</a></li>
+  </ul>
+</main>
+{% endblock content %}
+
+
+{{ form.csrf_token() }}

@@ -1,44 +1,52 @@
-from . import models
-from wtforms_alchemy import ModelForm
+# from . import models
+from .models import Student, Book, Year, Locker, Classroom, Subject, Grade, Club
+from wtforms_alchemy import ModelForm, ModelFormField, ModelFieldList
+from wtforms.fields import FormField
 
 # https://wtforms-alchemy.readthedocs.io/en/latest/introduction.html
 
 
-class StudentForm(ModelForm):
-    class Meta:
-        model = models.Student
-
-
 class BookForm(ModelForm):
     class Meta:
-        model = models.Book
+        model = Book
 
 
 class YearForm(ModelForm):
     class Meta:
-        model = models.Year
+        model = Year
 
 
 class LockerForm(ModelForm):
     class Meta:
-        model = models.Locker
+        model = Locker
 
 
 class ClassroomForm(ModelForm):
     class Meta:
-        model = models.Classroom
+        model = Classroom
 
 
 class SubjectForm(ModelForm):
     class Meta:
-        model = models.Subject
+        model = Subject
 
 
 class GradeForm(ModelForm):
     class Meta:
-        model = models.Grade
+        model = Grade
 
 
 class ClubForm(ModelForm):
     class Meta:
-        model = models.Club
+        model = Club
+
+
+class StudentForm(ModelForm):
+    class Meta:
+        model = Student
+
+    locker = ModelFormField(LockerForm)
+    books = ModelFieldList(FormField(BookForm))
+    year = ModelFormField(YearForm)
+    # rooms = ModelFormField(ClassroomForm)
+    # subjects = ModelFormField(SubjectForm)

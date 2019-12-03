@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block head %}
+<title>{{ mod.capitalize() }}s</title>
+{% endblock %}
+
+{% block header %}
+{{ super() }}
+<h1>All Current {{ mod.capitalize() }}s</h1>
+{% endblock header %}
+
+{% block content %}
+<ul>
+{% if data|length > 0 %}
+  {% for datum in data %}
+  <li><a href="{{ url_for('view', mod=mod, id=datum.id) }}">
+    {{ datum }}
+  </a> </li>
+  {% endfor %}
+{% else %}
+  <li>Currently None</li>
+{% endif %}
+</ul>
+<h3>Other Options</h3>
+<ul>
+  <li><a href="{{url_for('add', mod=mod)}}">Add {{mod.capitalize()}}</a></li>
+  <li><a href="{{ url_for('home') }}">Link example Home</a></li>
+</ul>
+{% endblock %}
