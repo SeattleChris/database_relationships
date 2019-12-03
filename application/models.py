@@ -106,6 +106,9 @@ class Locker(Model):
     def __str__(self):
         return str(self.number)
 
+    def __repr__(self):
+        return f"Locker: {self.number} Held by: {self.student}"
+
 
 class Classroom(Model):
     """ Various Students are in various Classrooms in a day. Many-to-Many (simple) """

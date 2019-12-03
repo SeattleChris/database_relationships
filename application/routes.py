@@ -44,19 +44,25 @@ def add(mod):
     Form = form_lookup[Model]
     form = Form(request.form)
     if Model == Student:
-        lockers = Locker.query.all()  # .filter(not Locker.student)
+        lockers = Locker.query.all()
         locker_list = [(ea.id, ea.number) for ea in lockers if not ea.student]
         form.locker_id.choices = locker_list
-        related = Book.query.all()
-        book_list = [(ea.id, ea.barcode) for ea in related]
-    # form.books.choices = book_list
-    # found_book = request.form.get('books')
-    # print(found_book)
-    # print(type(found_book))
+        # print(request.form.to_dict(flat=True))
+        # related = Book.query.all()
+        # book_list = [(ea.id, ea.barcode) for ea in related]
+        # form.books.choices = book_list
+        # found_book = request.form.get('books')
+        # print(found_book)
+        # print(type(found_book))
     if request.method == 'POST' and form.validate():
         app.logger.info(f'--------- add {mod}------------')
-        # data = request.form.to_dict(flat=True)  # TODO: add form validate method for security.
-        # # TODO: ?Check for failing unique column fields, or failing composite unique requirements?
+        data = request.form.to_dict(flat=True)
+        model_relationships = dict(inspect(Model).relationships.items())
+        print(model_relationships)
+        for key in data:
+            if key in model_relationships.keys():
+                
+                print(key)
         # model = Model(**data)
         # data = {key: key.data for key in form}
         # model = Model(**data)
