@@ -43,6 +43,15 @@ def add(mod):
         return f"No such route: {mod}", 404
     Form = form_lookup[Model]
     form = Form(request.form)
+    # l_id = request.form.get('locker_id')
+    # if l_id:
+    #     l_id = 3
+    #     print(l_id)
+    #     print(type(l_id))
+    #     request.form.locker_id = l_id
+    # new_data = request.form.get('locker_id')
+    # print(new_data)
+    # print(type(new_data))
     if request.method == 'POST' and form.validate():
         app.logger.info(f'--------- add {mod}------------')
         # data = request.form.to_dict(flat=True)  # TODO: add form validate method for security.

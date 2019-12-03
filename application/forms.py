@@ -1,7 +1,7 @@
 # from . import models
 from .models import Student, Book, Year, Locker, Classroom, Subject, Grade, Club
 from wtforms_alchemy import ModelForm, ModelFormField, ModelFieldList
-from wtforms.fields import FormField
+from wtforms.fields import FormField, SelectField
 
 # https://wtforms-alchemy.readthedocs.io/en/latest/introduction.html
 
@@ -45,8 +45,11 @@ class StudentForm(ModelForm):
     class Meta:
         model = Student
 
-    locker = ModelFormField(LockerForm)
+    lockers = Locker.query.all()  # .filter(not Locker.student)
+    locker_list = [(ea.id, ea.number) for ea in lockers]
+    locker_id = SelectField('Assigned Locker', choices=locker_list, coerce=int)
+    # locker = ModelFormField(LockerForm)
     books = ModelFieldList(FormField(BookForm))
-    year = ModelFormField(YearForm)
+    # year = ModelFormField(YearForm)
     # rooms = ModelFormField(ClassroomForm)
     # subjects = ModelFormField(SubjectForm)
