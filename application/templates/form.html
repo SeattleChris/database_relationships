@@ -10,7 +10,6 @@
 
 {% block content %}
 <main>
-  <p>some text before the errors</p>
   {% if form.errors %}
     <ul class="errors">
         {% for field_name, field_errors in form.errors|dictsort if field_errors %}

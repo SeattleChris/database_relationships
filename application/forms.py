@@ -45,13 +45,9 @@ class StudentForm(ModelForm):
     class Meta:
         model = Student
 
-    lockers = Locker.query.all()  # .filter(not Locker.student)
-    locker_list = [(ea.id, ea.number) for ea in lockers if not ea.student]
-    locker_id = SelectField('Assigned Locker', choices=locker_list, coerce=int)
-    # locker = ModelFormField(LockerForm)
-    related = Book.query.all()
-    book_list = [(ea.id, ea.barcode) for ea in related if not ea.student_id]
-    books = SelectMultipleField('Textbooks Assigned', choices=book_list)
+    locker_id = SelectField('Assigned Locker', coerce=int)
+    # books = SelectField('Assigned Book', choices=book_list, coerce=list)
+    # books = SelectMultipleField('Textbooks Assigned')
     # books = ModelFieldList(FormField(BookForm))
     # year = ModelFormField(YearForm)
     # rooms = ModelFormField(ClassroomForm)
