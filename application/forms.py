@@ -1,7 +1,7 @@
 # from . import models
 from .models import Student, Book, Year, Locker, Classroom, Subject, Grade, Club
-from wtforms_alchemy import ModelForm, ModelFormField, ModelFieldList, QuerySelectField, QuerySelectMultipleField
-from wtforms.fields import FormField, SelectField, SelectMultipleField
+from wtforms_alchemy import ModelForm, QuerySelectMultipleField
+from wtforms.fields import SelectField
 
 # https://wtforms-alchemy.readthedocs.io/en/latest/introduction.html
 
@@ -26,11 +26,6 @@ class ClassroomForm(ModelForm):
         model = Classroom
 
 
-class SubjectForm(ModelForm):
-    class Meta:
-        model = Subject
-
-
 class GradeForm(ModelForm):
     class Meta:
         model = Grade
@@ -50,12 +45,32 @@ class ClubForm(ModelForm):
 #     return Locker.query.filter(Locker.student is not None)
 
 
-def valid_years():
-    return Year.query
+def valid_books():
+    # filter out if book already assigned.
+    return Book.query
 
 
 def valid_rooms():
     return Classroom.query
+
+
+def valid_subjects():
+    return Subject.query
+
+
+def all_students():
+    return Student.query
+
+
+def all_clubs():
+    return Club.query
+
+
+class SubjectForm(ModelForm):
+    class Meta:
+        model = Subject
+
+    students = QuerySelectMultipleField(query_factory=all_students)  # get_label=<some Model field>
 
 
 class StudentForm(ModelForm):
@@ -64,10 +79,12 @@ class StudentForm(ModelForm):
 
     # locker_id = QuerySelectField(query_factory=available_lockers, allow_blank=True)
     locker_id = SelectField('Assigned Locker', coerce=int)
-    # books = SelectMultipleField('Textbooks Assigned')
+    year_id = SelectField('Class of', coerce=int)
+    subjects = QuerySelectMultipleField(query_factory=valid_subjects)  # get_label=<some Model field>
+    books = QuerySelectMultipleField(query_factory=valid_books)  # get_label=<some Model field>
+    rooms = QuerySelectMultipleField(query_factory=valid_rooms)  # get_label=<some Model field>
+    high_regards = QuerySelectMultipleField(query_factory=all_students)  # get_label=<some Model field>
+    leading_clubs = QuerySelectMultipleField(query_factory=all_clubs)  # get_label=<some Model field>
+    joined_clubs = QuerySelectMultipleField(query_factory=all_clubs)  # get_label=<some Model field>
     # books = ModelFieldList(FormField(BookForm))
-    year = QuerySelectField(query_factory=valid_years, get_label='graduation_year')
-    rooms = QuerySelectMultipleField(query_factory=valid_rooms)
-    # year = ModelFormField(YearForm)
     # rooms = ModelFormField(ClassroomForm)
-    # subjects = ModelFormField(SubjectForm)

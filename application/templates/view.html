@@ -17,6 +17,7 @@
 {% block modify %}
 <h3>Modify Record</h3>
 <ul>
+  <li><a href="{{ url_for('add', mod=mod) }}">Add a different {{ mod|title}}</a></li>
   <li>CAREFUL BELOW!</li>
   <li><a href="{{ url_for('edit', mod=mod, id=data.id) }}">Update {{ mod|title }}</a></li>
   <li><a href="{{ url_for('delete', mod=mod, id=data.id) }}">Delete {{ mod|title }}</a></li>

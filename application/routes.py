@@ -47,46 +47,37 @@ def add(mod):
         lockers = Locker.query.all()
         locker_list = [(ea.id, ea.number) for ea in lockers if not ea.student]
         form.locker_id.choices = locker_list
-        # print(request.form.to_dict(flat=True))
-        # related = Book.query.all()
-        # book_list = [(ea.id, ea.barcode) for ea in related]
-        # form.books.choices = book_list
-        # found_book = request.form.get('books')
-        # print(found_book)
-        # print(type(found_book))
+        years = Year.query.all()
+        years_list = [(ea.id, ea.graduation_year) for ea in years]
+        form.year_id.choices = years_list
     if request.method == 'POST' and form.validate():
-        app.logger.info(f'--------- add {mod}------------')
-        multi = {k: v for k, v in request.form.to_dict(flat=False).items() if len(v) > 1}
+        app.logger.info(f'-------- add {mod}-----------')
+        related_models = {k: v.mapper.class_ for k, v in inspect(Model).relationships.items()}
+        # If assign the Model.id when possible for a field, then relationships are all multi-item possabilities.
+        multi = {k: v for k, v in request.form.to_dict(flat=False).items() if k in related_models}
         data = request.form.to_dict(flat=True)
         data.update(multi)
         print(data)
-        # print(request.form)
-        print('---------------------------------------')
-        related_models = {k: v.mapper.class_ for k, v in inspect(Model).relationships.items()}
+        # print('---------------------------------------')
         # print(model_relationships)
         for key, val in data.items():
             if key in related_models:
                 Related = related_models[key]
-                found = []
+                # found = []
                 if isinstance(val, list):
-                    print('has list')
-                    for ea in val:
-                        print(type(ea))
-                        found.append(Related.query.get(int(ea)))
+                    found = [Related.query.get(int(ea)) for ea in val]
+                    # for ea in val:
+                    #     found.append(Related.query.get(int(ea)))
                 else:
                     found = Related.query.get(int(val))
                 print(found)
                 data[key] = found
-        # model = Model(**data)
-        # data = {key: key.data for key in form}
-        # model = Model(**data)
         model = Model(**data)
         db.session.add(model)
         db.session.commit()
-        print(model.id)
-        # Model.save()
+        # print(model.id)
         if form.validate():
-            flash(f"Good Job!!!!!")
+            flash(f"Good Job!! You made {mod} record {model.id}: {model}")
         return redirect(url_for('view', mod=mod, id=model.id))
     # template = f"{mod}_form.html"
     template, related = 'form.html', {}
