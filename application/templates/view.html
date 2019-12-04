@@ -9,7 +9,18 @@
 {% block data_view %}
 <ul>
 {% for key in data.keys() %}
-  <li>{{key}}: {{data[key]}} </li>
+  <li>
+    {% if data[key] is iterable and data[key] is not string %}
+    {{key}}:
+    <ul>
+      {% for ea in data[key] %}
+      <li>{{ ea }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    {{key}}: {{data[key]}}
+    {% endif %}
+  </li>
 {% endfor %}
 </ul>
 {% endblock data_view %}
@@ -17,6 +28,7 @@
 {% block modify %}
 <h3>Modify Record</h3>
 <ul>
+  <li><a href="{{ url_for('add', mod=mod) }}">Add a different {{ mod|title}}</a></li>
   <li>CAREFUL BELOW!</li>
   <li><a href="{{ url_for('edit', mod=mod, id=data.id) }}">Update {{ mod|title }}</a></li>
   <li><a href="{{ url_for('delete', mod=mod, id=data.id) }}">Delete {{ mod|title }}</a></li>

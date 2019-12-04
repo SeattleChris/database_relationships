@@ -12,6 +12,7 @@
     "ondelete",
     "pyfile",
     "pymysql",
+    "vals",
     "wtforms"
   ]
 }
