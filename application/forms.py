@@ -26,16 +26,6 @@ class ClassroomForm(ModelForm):
         model = Classroom
 
 
-class GradeForm(ModelForm):
-    class Meta:
-        model = Grade
-
-
-class ClubForm(ModelForm):
-    class Meta:
-        model = Club
-
-
 # def available_lockers():
 #     found = Locker.query.filter(Locker.student.is_type(Student)).all()
 #     print(found)
@@ -66,11 +56,24 @@ def all_clubs():
     return Club.query
 
 
+class GradeForm(ModelForm):
+    class Meta:
+        model = Grade
+
+
 class SubjectForm(ModelForm):
     class Meta:
         model = Subject
 
     students = QuerySelectMultipleField(query_factory=all_students)  # get_label=<some Model field>
+
+
+class ClubForm(ModelForm):
+    class Meta:
+        model = Club
+
+    leaders = QuerySelectMultipleField(query_factory=all_students)  # get_label=<some Model field>
+    members = QuerySelectMultipleField(query_factory=all_students)  # get_label=<some Model field>
 
 
 class StudentForm(ModelForm):

@@ -173,7 +173,7 @@ class Grade(Model):
 
     def __repr__(self):
         return f"{self.student} - {self.subject}: {self.gradepoint}"
-        return super().__repr__()
+
 
 club_leader = Table(
     'club_leader',  # Base.metadata,
