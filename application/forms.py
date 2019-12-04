@@ -1,6 +1,6 @@
 # from . import models
 from .models import Student, Book, Year, Locker, Classroom, Subject, Grade, Club
-from wtforms_alchemy import ModelForm, ModelFormField, ModelFieldList, QuerySelectField
+from wtforms_alchemy import ModelForm, ModelFormField, ModelFieldList, QuerySelectField, QuerySelectMultipleField
 from wtforms.fields import FormField, SelectField, SelectMultipleField
 
 # https://wtforms-alchemy.readthedocs.io/en/latest/introduction.html
@@ -54,6 +54,10 @@ def valid_years():
     return Year.query
 
 
+def valid_rooms():
+    return Classroom.query
+
+
 class StudentForm(ModelForm):
     class Meta:
         model = Student
@@ -63,6 +67,7 @@ class StudentForm(ModelForm):
     # books = SelectMultipleField('Textbooks Assigned')
     # books = ModelFieldList(FormField(BookForm))
     year = QuerySelectField(query_factory=valid_years, get_label='graduation_year')
+    rooms = QuerySelectMultipleField(query_factory=valid_rooms)
     # year = ModelFormField(YearForm)
     # rooms = ModelFormField(ClassroomForm)
     # subjects = ModelFormField(SubjectForm)

@@ -56,17 +56,31 @@ def add(mod):
         # print(type(found_book))
     if request.method == 'POST' and form.validate():
         app.logger.info(f'--------- add {mod}------------')
+        multi = {k: v for k, v in request.form.to_dict(flat=False).items() if len(v) > 1}
         data = request.form.to_dict(flat=True)
-        model_relationships = dict(inspect(Model).relationships.items())
-        print(model_relationships)
-        for key in data:
-            if key in model_relationships.keys():
-                
-                print(key)
+        data.update(multi)
+        print(data)
+        # print(request.form)
+        print('---------------------------------------')
+        related_models = {k: v.mapper.class_ for k, v in inspect(Model).relationships.items()}
+        # print(model_relationships)
+        for key, val in data.items():
+            if key in related_models:
+                Related = related_models[key]
+                found = []
+                if isinstance(val, list):
+                    print('has list')
+                    for ea in val:
+                        print(type(ea))
+                        found.append(Related.query.get(int(ea)))
+                else:
+                    found = Related.query.get(int(val))
+                print(found)
+                data[key] = found
         # model = Model(**data)
         # data = {key: key.data for key in form}
         # model = Model(**data)
-        model = Model(**request.form)
+        model = Model(**data)
         db.session.add(model)
         db.session.commit()
         print(model.id)

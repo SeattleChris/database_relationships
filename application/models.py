@@ -122,6 +122,9 @@ class Classroom(Model):
     def __str__(self):
         return f"Class: {self.building} {self.room_num}"
 
+    def __repr__(self):
+        return f"Class: {self.building} {self.room_num}"
+
 
 class Subject(Model):
     """ Multiple Students in multiple Subjects, with a Grade for each. Many-to-Many through Associated Object """
