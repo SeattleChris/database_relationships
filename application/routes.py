@@ -116,8 +116,6 @@ def add(mod):
 @app.route("/<string:mod>/<int:id>/edit", methods=['GET', 'POST'])
 def edit(mod, id):
     """ Edit existing record for Student or other Model """
-    from pprint import pprint
-
     Model = mod_lookup.get(mod, None)
     if not Model:
         return f"No such route: {mod}", 404
@@ -138,10 +136,14 @@ def edit(mod, id):
 
 
 @app.route("/<string:mod>/<int:id>/delete")
-def delete(mod):
+def delete(mod, id):
     """ Delete the record for Model indicated by 'mod' with a primary key of 'id'. """
-
-    return f"Delete {mod} Route. For {id} record. "
+    Model = mod_lookup.get(mod, None)
+    if not Model:
+        return f"No such route: {mod}", 404
+    Model.query.filter_by(id=id).delete()
+    db.session.commit()
+    return redirect(url_for('all', mod=mod))
 
 
 @app.route("/<string:mod>/list", methods=['GET'])
