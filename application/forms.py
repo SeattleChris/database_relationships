@@ -11,11 +11,6 @@ class BookForm(ModelForm):
         model = Book
 
 
-class YearForm(ModelForm):
-    class Meta:
-        model = Year
-
-
 class LockerForm(ModelForm):
     class Meta:
         model = Locker
@@ -24,15 +19,6 @@ class LockerForm(ModelForm):
 class ClassroomForm(ModelForm):
     class Meta:
         model = Classroom
-
-
-# def available_lockers():
-#     found = Locker.query.filter(Locker.student.is_type(Student)).all()
-#     print(found)
-#     for locker in found:
-#         print(isinstance(locker.student, Student))
-#         print(locker.student)
-#     return Locker.query.filter(Locker.student is not None)
 
 
 def valid_books():
@@ -54,6 +40,13 @@ def all_students():
 
 def all_clubs():
     return Club.query
+
+
+class YearForm(ModelForm):
+    class Meta:
+        model = Year
+
+    # students = QuerySelectMultipleField(query_factory=all_students)  # get_label=<some Model field>
 
 
 class GradeForm(ModelForm):
