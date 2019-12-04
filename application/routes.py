@@ -3,8 +3,7 @@ from flask import render_template, redirect, url_for, request, abort, flash
 from .models import db, Student, Book, Year, Locker, Classroom, Subject, Grade, Club
 from sqlalchemy import inspect
 from . import forms
-# from .models import db
-# import json
+
 mod_list = [Student, Book, Year, Locker, Classroom, Subject, Grade, Club]
 mod_lookup = {model.__name__.lower(): model for model in mod_list}
 form_lookup = {model: getattr(forms, f"{model.__name__}Form") for model in mod_list}
@@ -80,16 +79,11 @@ def add(mod):
         data = request.form.to_dict(flat=True)
         data.update(multi)
         print(data)
-        # print('---------------------------------------')
-        # print(model_relationships)
         for key, val in data.items():
             if key in related_models:
                 Related = related_models[key]
-                # found = []
                 if isinstance(val, list):
                     found = [Related.query.get(int(ea)) for ea in val]
-                    # for ea in val:
-                    #     found.append(Related.query.get(int(ea)))
                 else:
                     found = Related.query.get(int(val))
                 print(found)
@@ -97,20 +91,11 @@ def add(mod):
         model = Model(**data)
         db.session.add(model)
         db.session.commit()
-        # print(model.id)
         if form.validate():
             flash(f"Good Job!! You made {mod} record {model.id}: {model}")
         return redirect(url_for('view', mod=mod, id=model.id))
     # template = f"{mod}_form.html"
-    template, related = 'form.html', {}
-    if mod == 'campaign':
-        template = f"{mod}_{template}"
-        # TODO: Modify query to only get the id and name fields?
-        # users = model_db.User.query.all()
-        # brands = model_db.Brand.query.all()
-        # related['users'] = [(ea.id, ea.name) for ea in users]
-        # related['brands'] = [(ea.id, ea.name) for ea in brands]
-    # return render_template(template, action='Add', mod=mod, data={}, related=related)
+    template = 'form.html'
     return render_template(template, mod=mod, form=form)
 
 
