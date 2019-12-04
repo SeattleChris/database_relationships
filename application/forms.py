@@ -60,6 +60,9 @@ class GradeForm(ModelForm):
     class Meta:
         model = Grade
 
+    subject_id = SelectField('Subject', coerce=int)
+    student_id = SelectField('Student', coerce=int)
+
 
 class SubjectForm(ModelForm):
     class Meta:

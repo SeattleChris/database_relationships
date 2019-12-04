@@ -64,6 +64,14 @@ def add(mod):
         years = Year.query.all()
         years_list = [(ea.id, ea.graduation_year) for ea in years]
         form.year_id.choices = years_list
+    elif Model == Grade:
+        subjects = Subject.query.all()
+        subject_list = [(ea.id, ea) for ea in subjects]
+        form.subject_id.choices = subject_list
+        # Should setup some JS to repopulate students based on subject selection.
+        students = Student.query.all()
+        student_list = [(ea.id, f"{ea.name} in: {', '.join([subj.name for subj in ea.subjects])}") for ea in students]
+        form.student_id.choices = student_list
     if request.method == 'POST' and form.validate():
         app.logger.info(f'-------- add {mod}-----------')
         related_models = {k: v.mapper.class_ for k, v in inspect(Model).relationships.items()}
