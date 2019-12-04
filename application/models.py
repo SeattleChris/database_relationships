@@ -68,6 +68,9 @@ class Student(Model):
     def __str__(self):
         return self.name
 
+    def __repr__(self):
+        return self.name
+
 
 class Book(Model):
     """ Students receive multiple textbooks that they must return. One-to-Many """
@@ -82,6 +85,9 @@ class Book(Model):
     def __str__(self):
         return f"Book: {self.barcode} Held by: {self.student}"
 
+    def __repr__(self):
+        return f"Book: {self.barcode} Held by: {self.student}"
+
 
 class Year(Model):
     """ Various Students have a projected year of graduation. Many-to-One """
@@ -92,6 +98,9 @@ class Year(Model):
     # # students = backref from Student.year
 
     def __str__(self):
+        return str(self.graduation_year)
+
+    def __repr__(self):
         return str(self.graduation_year)
 
 
@@ -138,6 +147,9 @@ class Subject(Model):
     def __str__(self):
         return f"Subject: {self.name} with {len(self.students)} students"
 
+    def __repr__(self):
+        return f"Subject: {self.name} with {len(self.students)} students"
+
 
 class Grade(Model):
     """ Associated Object of Many-to-Many (with extra fields).
@@ -159,6 +171,9 @@ class Grade(Model):
     def __str__(self):
         return str(self.gradepoint)
 
+    def __repr__(self):
+        return f"{self.student} - {self.subject}: {self.gradepoint}"
+        return super().__repr__()
 
 club_leader = Table(
     'club_leader',  # Base.metadata,

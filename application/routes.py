@@ -10,9 +10,22 @@ mod_lookup = {model.__name__.lower(): model for model in mod_list}
 form_lookup = {model: getattr(forms, f"{model.__name__}Form") for model in mod_list}
 
 
-def model_dict(obj):
-    return {c.key: getattr(obj, c.key)
-            for c in inspect(obj).mapper.column_attrs}
+def model_dict(obj, related_obj=True):
+    attrs = {c.key: getattr(obj, c.key) for c in inspect(obj).mapper.column_attrs}
+    if related_obj:
+        relationships = inspect(obj).mapper.relationships.keys()
+        print(relationships)
+        print('---------------------')
+        for related in relationships:
+            print(related)
+            vals = getattr(obj, related)
+            if isinstance(vals, list):
+                for val in vals:
+                    print(val)
+            attrs[related] = getattr(obj, related)
+            print(attrs[related])
+            print('---------------------')
+    return attrs
 
 
 @app.route("/")
@@ -32,6 +45,7 @@ def view(mod, id):
         model = {'id': 0}
     template = 'view.html'
     data = model_dict(model)
+    print(data)
     return render_template(template, mod=mod, data=data)
 
 
