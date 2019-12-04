@@ -55,20 +55,24 @@ def setup_form(Model, request, edit=None):
 def clean_form(Model, request, form):
     related_models = {k: v.mapper.class_ for k, v in inspect(Model).relationships.items()}
     # If assign the Model.id when possible for a field, then relationships are all multi-item possabilities.
+    print('======================')
+    print(request.form)
     multi = {k: v for k, v in request.form.to_dict(flat=False).items() if k in related_models}
-    data = request.form.to_dict(flat=True)
-    data.update(multi)
-    print(data)
-    for key, val in data.items():
-        if key in related_models:
-            Related = related_models[key]
-            if isinstance(val, list):
-                found = [Related.query.get(int(ea)) for ea in val]
-            else:
-                found = Related.query.get(int(val))
-            print(found)
-            data[key] = found
-    return data
+    [setattr(form, key, val) for key, val in multi.items()]
+    # data = request.form.to_dict(flat=True)
+    # data.update(multi)
+    # print(data)
+    # for key, val in data.items():
+    #     if key in related_models:
+    #         Related = related_models[key]
+    #         if isinstance(val, list):
+    #             found = [Related.query.get(int(ea)) for ea in val]
+    #         else:
+    #             found = Related.query.get(int(val))
+    #         print(found)
+    #         data[key] = found
+    # return data
+    return form
 
 
 @app.route("/")
@@ -101,12 +105,12 @@ def add(mod):
     form = setup_form(Model, request)
     if request.method == 'POST' and form.validate():
         app.logger.info(f'-------- add {mod}-----------')
-        data = clean_form(Model, request, form)
-        model = Model(**data)
-        db.session.add(model)
+        form = clean_form(Model, request, form)
+        model = Model()
+        form.populate_obj(model)
+        # db.session.add(model)
         db.session.commit()
-        if form.validate():
-            flash(f"Good Job!! You made {mod} record {model.id}: {model}")
+        flash(f"Good Job!! You created a {mod} record {model.id}: {model}")
         return redirect(url_for('view', mod=mod, id=model.id))
     # template = f"{mod}_form.html"
     template = 'form.html'
@@ -123,12 +127,11 @@ def edit(mod, id):
     form = setup_form(Model, request, edit=model)
     if request.method == 'POST' and form.validate():
         app.logger.info(f'-------- edit {mod}-----------')
-        data = clean_form(Model, request, form)
-        model = Model(**data)
-        db.session.add(model)
+        form = clean_form(Model, request, form)
+        form.populate_obj(model)
+        # db.session.add(model)
         db.session.commit()
-        if form.validate():
-            flash(f"Good Job!! You made {mod} record {model.id}: {model}")
+        flash(f"Good Job!! You updated {mod} record {model.id}: {model}")
         return redirect(url_for('view', mod=mod, id=model.id))
     # template = f"{mod}_form.html"
     template = 'form.html'
