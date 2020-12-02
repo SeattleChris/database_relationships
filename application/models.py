@@ -10,7 +10,7 @@ from . import db
 
 """
 ===================================================================================================================
-student to book         => One-to-Many  # ForeignKey on One, relationship on Second.
+student to book         => One-to-Many  # Relationship on One, ForeignKey on Second.
 student to year         => Many-to-One  # ForeignKey & relationship on One.
 student to locker       => One-to-One   # ForeignKey & relationship on One.
 student to classroom    => Many-to-Many # Relationship on One, 2 ForeignKeys on needed association_table.
@@ -21,14 +21,14 @@ student-student Clubs   => Many-to-Many # 2 relationships on Club, 2 assoc_table
 """
 
 popular = Table(
-    'popular',  # Base.metadata,
+    'popular',
     Column('id', Integer, primary_key=True),
     Column('high_regard_id', Integer, ForeignKey('students.id')),
     Column('fan_id',  Integer, ForeignKey('students.id'))
 )
 
 association_table = Table(
-    'student_classroom',  # Base.metadata,
+    'student_classroom',
     Column('id', Integer, primary_key=True),
     Column('student_id', Integer, ForeignKey('students.id')),
     Column('classroom_id', Integer, ForeignKey('classrooms.id'))
@@ -42,8 +42,8 @@ class Student(Model):
     name = Column(String(255))
     year_id = Column(Integer, ForeignKey('years.id'))
     locker_id = Column(Integer, ForeignKey('lockers.id'))
-    modified = db.Column(db.DateTime,               index=False, unique=False, nullable=False, default=dt.utcnow, onupdate=dt.utcnow)
-    created = db.Column(db.DateTime,                index=False, unique=False, nullable=False, default=dt.utcnow)
+    modified = db.Column(db.DateTime, index=False, unique=False, nullable=False, default=dt.utcnow, onupdate=dt.utcnow)
+    created = db.Column(db.DateTime,  index=False, unique=False, nullable=False, default=dt.utcnow)
     year = relationship('Year', backref='students')
     books = relationship('Book', backref='student')
     locker = relationship('Locker', backref=backref('student', uselist=False))
