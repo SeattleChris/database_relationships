@@ -14,9 +14,9 @@ student to book         => One-to-Many  # Relationship on One, ForeignKey on Sec
 student to year         => Many-to-One  # ForeignKey & relationship on One.
 student to locker       => One-to-One   # ForeignKey & relationship on One.
 student to classroom    => Many-to-Many # Relationship on One, 2 ForeignKeys on needed association_table.
-student to subject      => Many-to-Many # Relationship on Both, 2 ForeignKeys & 2 Relationships on Associated Object (class).
-student-student popular => Many-to-Many # 1 relationship on Student, 2 ForeignKeys on assoc_table
-student-student Clubs   => Many-to-Many # 2 relationships on Club, 2 assoc_table, each w/ 2 ForeignKeys (Club, leader|member)
+student to subject      => Many-to-Many # Relationship on Both, 2 ForeignKeys & 2 Relationships on Assoc. Object(class).
+student-student popular => Many-to-Many # 1 Student relationship, 2 ForeignKeys on assoc_table.
+student-student Clubs   => Many-to-Many # 2 Club relationships, 2 assoc_table each w/ 2 ForeignKeys (leader vs member).
 ===================================================================================================================
 """
 
